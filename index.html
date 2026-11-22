@@ -42,6 +42,7 @@ textarea{width:100%;font:inherit;padding:10px;border:2px solid var(--line);borde
 .card:focus-visible,.btn:focus-visible,.opt:focus-visible,.link:focus-visible,textarea:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
 input#un,input#pw{width:100%;font:inherit;padding:10px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin-top:4px}
 .pop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.popbox{background:var(--bg);color:var(--ink);border-radius:16px;padding:18px;max-width:460px;width:100%;max-height:85vh;overflow:auto}
+.w{padding:0 2px;border-radius:4px}.w.on{background:var(--mark);color:#12233d}.w.done{color:var(--muted)}.script{font-size:1.25rem;line-height:1.8}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -102,21 +103,31 @@ function fmt(x){x=Math.round(x||0);return x<60?x+" s":Math.floor(x/60)+" min "+(
 function showDay(s,n){
  view="day";var p=P[s],d=p.d[n-1],t0={},c=cm[s+"_"+n],LV=["Level 1: Basic","Level 2: Intermediate","Level 3: Advanced"];
  function S(){prog[s]=prog[s]||{days:{}};prog[s].days=prog[s].days||{};return prog[s].days[n]=prog[s].days[n]||{}}S();
- function recBox(t,title,body){return '<h2>'+title+'</h2>'+body+'<button class="btn pri" id="rc'+t+'">Record with microphone</button><label class="btn" for="fl'+t+'">Use my phone’s voice recorder</label><input type="file" id="fl'+t+'" accept="audio/*" capture hidden><p class="hint" id="inf'+t+'"></p><audio id="pv'+t+'" controls hidden></audio><button class="btn pri" id="sv'+t+'" hidden>Save my recording</button><div id="sd'+t+'"></div>'}
+ var st0=S(),hide=!!(st0.sd&&!st0.fd),words=d[6].split(" ");
+ function recBox(t,title,body,locked){if(locked)return '<h2>'+title+'</h2><p class="hint">Finish the script recording first.</p>';return '<h2>'+title+'</h2>'+body+'<button class="btn pri" id="rc'+t+'">Record with microphone</button><label class="btn" for="fl'+t+'">Use my phone’s voice recorder</label><input type="file" id="fl'+t+'" accept="audio/*" capture hidden><p class="hint" id="inf'+t+'"></p><audio id="pv'+t+'" controls hidden></audio><button class="btn pri" id="sv'+t+'" hidden>Save my recording</button><div id="sd'+t+'"></div>'}
  app.innerHTML='<button class="link" id="bk">Back to my days</button><h1>Day '+n+': '+d[0]+'</h1>'+
  '<h2>1. Listening</h2><p class="hint">Listen to all three levels, from easiest to hardest. Then answer the question.</p>'+
  d[1].map(function(x,i){return '<button class="btn" data-lv="'+i+'">'+LV[i]+'</button>'}).join("")+'<button class="btn" id="pz">Pause</button><label class="lb"><input type="checkbox" id="sl"> Slow</label>'+
  '<p class="hint" id="lh"></p><p class="q">'+d[2]+'</p><div class="opts">'+d[3].map(function(o,i){return '<button class="opt" data-i="'+i+'">'+o+'</button>'}).join("")+'</div><div id="lf"></div>'+
- recBox("s","2. Speaking: read the script",'<div class="box">'+d[6]+'</div>')+
- recBox("f","3. Speaking: no script",'<div class="box">'+d[5]+'<br><span class="hint">Do not read. Say it in your own words.</span></div>')+
+ recBox("s","2. Speaking: read the script",hide?'<div class="box hint">Your script is hidden now, so you can speak without it.</div>':'<div class="box script" id="scr">'+words.map(function(w){return '<span class="w">'+esc(w)+'</span>'}).join(" ")+'</div><button class="btn" id="hear">Hear it</button><button class="btn" id="ra">Read along</button><button class="btn" id="hst">Stop</button><label class="lb">Pace <select id="hp"><option value="n">Natural</option><option value="slow">Slower</option></select></label>')+
+ recBox("f","3. Speaking: no script",'<div class="box">'+d[5]+'<br><span class="hint">Do not read. Say it in your own words.</span></div>',!st0.sd)+
  '<div id="fin"></div>'+(c&&c.text?'<h2>Comment from your teacher</h2><div class="box">'+esc(c.text)+'</div>':'');
  var $=function(i){return document.getElementById(i)},opts=app.querySelectorAll(".opt");
+ var ws=Array.from(app.querySelectorAll("#scr .w")),hl={tm:null,run:false};
+ function pace(){var e=$("hp");return e&&e.value==="slow"?1.4:1}
+ function wdur(w){var l=w.replace(/[^A-Za-z0-9]/g,"").length;return(260+42*l+(/[,;]$/.test(w)?220:0)+(/[.?!]$/.test(w)?420:0))*pace()}
+ function hlStop(c){clearTimeout(hl.tm);hl.run=false;if(c)ws.forEach(function(e){e.className="w"})}
+ function hlRun(){if(!ws.length)return;hlStop(true);hl.run=true;var i=0;(function step(){if(!hl.run)return;if(i>0)ws[i-1].className="w done";if(i>=ws.length){hl.run=false;return}ws[i].className="w on";hl.tm=setTimeout(step,wdur(words[i++]))})()}
+ function hear(){if(!ws.length)return;hlStop(true);try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(d[6]),got=false,pos=[],o=0;words.forEach(function(w){pos.push(o);o+=w.length+1});u.lang="en-US";u.rate=pace()>1?.7:.9;
+  u.onboundary=function(e){if(e.name&&e.name!=="word")return;got=true;var k=0;for(var j=0;j<pos.length;j++)if(pos[j]<=e.charIndex)k=j;ws.forEach(function(x,j){x.className=j<k?"w done":j===k?"w on":"w"})};
+  u.onend=function(){ws.forEach(function(x){x.className="w done"})};speechSynthesis.speak(u);setTimeout(function(){if(!got&&speechSynthesis.speaking)hlRun()},1500)}catch(e){}}
+ if($("hear")){$("hear").onclick=hear;$("ra").onclick=hlRun;$("hst").onclick=function(){hlStop(true);try{speechSynthesis.cancel()}catch(e){}}}
  function startT(k){if(!t0[k])t0[k]=Date.now()}
  function stopT(k){return t0[k]?Math.round((Date.now()-t0[k])/1000):0}
  function persist(){var st=S();if(st.ld&&st.sd&&st.fd&&!st.on)st.on=today();db.doc("prog/"+s).set(prog[s]).catch(function(e){note("Could not save: "+((e&&e.message)||""))});fin()}
  function fin(){var st=S();$("fin").innerHTML=(st.ld&&st.sd&&st.fd)?'<div class="box ok">Day complete! '+(n<5?'Day '+(n+1)+' opens tomorrow.':'You finished all 5 days.')+'</div>':''}
  function lock(){var st=S(),pl=st.pl||[0,0,0],k=pl[0]+pl[1]+pl[2];opts.forEach(function(b){b.disabled=!(k===3||st.ld)});$("lh").textContent=st.ld?"":k===3?"Now answer the question.":"Listen to all three levels to unlock the question ("+k+" of 3).";app.querySelectorAll("[data-lv]").forEach(function(b){var i=+b.dataset.lv;b.textContent=LV[i]+(pl[i]?" ✓":"")})}
- function showL(){var st=S();if(!st.ld)return;opts.forEach(function(b){b.disabled=true;if(+b.dataset.i===d[4])b.classList.add("good")});$("lf").innerHTML='<div class="box">'+(st.lq?'Correct! ':'Not quite. The answer is: '+d[3][d[4]]+'. ')+'<br>'+d[1].map(function(x,i){return '<b>'+LV[i]+':</b> '+x}).join("<br>")+'</div>'}
+ function showL(){var st=S();if(!st.ld)return;opts.forEach(function(b){b.disabled=true;if(+b.dataset.i===d[4])b.classList.add("good")});$("lf").innerHTML='<div class="box">'+(st.lq?'Correct! ':'Not quite. The answer is: '+d[3][d[4]]+'. ')+(hide?'':'<br>'+d[1].map(function(x,i){return '<b>'+LV[i]+':</b> '+x}).join("<br>"))+'</div>'}
  function saveRec(patch,sf){var r=db.doc("rec/"+s+"_"+n+sf);return r.get().then(function(sn){var x=sn.data()||{};for(var k in patch)x[k]=patch[k];x.at=Date.now();return r.set(x)})}
  function saveAudio(b,sf){var key="rec/"+s+"_"+n+sf+"p",C=150000,np=Math.ceil(b.length/C),ps=[];for(var i=0;i<np;i++){var sl=b.subarray(i*C,(i+1)*C),t="";for(var j=0;j<sl.length;j+=8192)t+=String.fromCharCode.apply(null,sl.subarray(j,j+8192));ps.push(db.doc(key+i).set({b:btoa(t)}))}return Promise.all(ps).then(function(){return saveRec({aud:np,len:b.length},sf)})}
  function showR(t){var st=S(),sf=t==="s"?"":"b";if(!st[t==="s"?"sd":"fd"])return;$("sd"+t).innerHTML='<div class="box">Saved. <button class="btn" id="mine'+t+'">Open my recording</button></div>';$("mine"+t).onclick=function(){db.doc("rec/"+s+"_"+n+sf).get().then(function(sn){loadAudio(s,n,sn.data()||{},sf).then(function(u){if(u){$("pv"+t).src=u;$("pv"+t).hidden=false;$("pv"+t).play()}})})}}
@@ -130,17 +141,17 @@ function showDay(s,n){
    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
     var ch=[],secs=0;try{mr=new MediaRecorder(stream,{audioBitsPerSecond:16000})}catch(e){mr=new MediaRecorder(stream)}
     mr.ondataavailable=function(e){ch.push(e.data)};
-    mr.onstop=function(){stream.getTracks().forEach(function(x){x.stop()});clearInterval(tk);$("rc"+t).textContent="Record again";got(new Blob(ch,{type:mr.mimeType||"audio/webm"}))};
-    mr.start();$("rc"+t).textContent="Stop";tk=setInterval(function(){secs++;nt("Recording… "+secs+" s (up to 60 s)");if(secs>=60)mr.stop()},1000);
+    mr.onstop=function(){stream.getTracks().forEach(function(x){x.stop()});clearInterval(tk);if(t==="s")hlStop(true);$("rc"+t).textContent="Record again";got(new Blob(ch,{type:mr.mimeType||"audio/webm"}))};
+    mr.start();$("rc"+t).textContent="Stop";if(t==="s")hlRun();tk=setInterval(function(){secs++;nt("Recording… "+secs+" s (up to 60 s)");if(secs>=60)mr.stop()},1000);
    }).catch(function(e){var m=e&&e.name;nt(m==="NotFoundError"?"No microphone was found on this device.":(m==="NotAllowedError"||m==="SecurityError")?"The browser blocked the microphone. Allow it in the address bar, or use the phone voice recorder button.":"Recording did not start ("+m+"). Use the phone voice recorder button.")});
   };
-  $("sv"+t).onclick=function(){if(!bytes)return;nt("Saving…");saveAudio(bytes,sf).then(function(){var st=S();st[t==="s"?"sd":"fd"]=true;st[t==="s"?"ts":"tf"]=stopT(t);st[t==="s"?"as":"af"]=Math.round(bytes.length/8000);$("sv"+t).hidden=true;showR(t);persist();nt("Saved. Your teacher can now listen.")}).catch(function(e){nt("Could not save: "+((e&&e.message)||""))})};
+  $("sv"+t).onclick=function(){if(!bytes)return;nt("Saving…");saveAudio(bytes,sf).then(function(){var st=S();st[t==="s"?"sd":"fd"]=true;st[t==="s"?"ts":"tf"]=stopT(t);st[t==="s"?"as":"af"]=Math.round(bytes.length/8000);$("sv"+t).hidden=true;showR(t);persist();if(t==="s"){showDay(s,n);$("infs").textContent="Saved. Now do the no-script recording below."}else nt("Saved. Your teacher can now listen.")}).catch(function(e){nt("Could not save: "+((e&&e.message)||""))})};
  }
- $("bk").onclick=function(){try{speechSynthesis.cancel()}catch(e){}showHome(s)};
+ $("bk").onclick=function(){hlStop(false);try{speechSynthesis.cancel()}catch(e){}showHome(s)};
  app.querySelectorAll("[data-lv]").forEach(function(b){b.onclick=function(){var i=+b.dataset.lv,st=S();startT("l");try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(d[1][i]);u.lang="en-US";u.rate=$("sl").checked?.65:.9;speechSynthesis.speak(u)}catch(e){}if(!st.pl)st.pl=[0,0,0];if(!st.pl[i]){st.pl[i]=1;persist()}lock()}});
  $("pz").onclick=function(){try{if(speechSynthesis.paused){speechSynthesis.resume();$("pz").textContent="Pause"}else{speechSynthesis.pause();$("pz").textContent="Resume"}}catch(e){}};
  opts.forEach(function(b){b.onclick=function(){var st=S();if(st.ld||b.disabled)return;st.ld=true;st.lq=(+b.dataset.i===d[4])?1:0;st.tl=stopT("l");if(!st.lq)b.classList.add("bad");showL();persist()}});
- rec("s");rec("f");lock();showL();showR("s");showR("f");fin();
+ rec("s");if(st0.sd)rec("f");lock();showL();showR("s");showR("f");fin();
 }
 function showTeacher(){
  view="teacher";var h='<button class="link" id="sw">Log out</button><h1>Teacher dashboard</h1><p class="sub">Listen to recordings, write comments and corrections, or open a day early.</p>';
