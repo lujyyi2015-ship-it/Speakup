@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily English Practice</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#eef3f8;--surface:#fff;--ink:#12233d;--muted:#5b6b82;--line:#cfd9e6;--accent:#12233d;--accent-ink:#fff;--mark:#ffc933;--good:#1b7f4b;--goodbg:#dcf3e6;--bad:#b3261e;--badbg:#fbe0dd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1726;--surface:#17233a;--ink:#e8eef8;--muted:#94a3bb;--line:#2c3b57;--accent:#ffc933;--accent-ink:#12233d;--good:#6fdca2;--goodbg:#14382b;--bad:#ff9a92;--badbg:#431d1a}}
+:root[data-theme="dark"]{--bg:#0e1726;--surface:#17233a;--ink:#e8eef8;--muted:#94a3bb;--line:#2c3b57;--accent:#ffc933;--accent-ink:#12233d;--good:#6fdca2;--goodbg:#14382b;--bad:#ff9a92;--badbg:#431d1a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{max-width:680px;margin:0 auto;padding:24px 18px 56px}
+h1{font-size:clamp(1.9rem,7vw,2.7rem);line-height:1.08;margin:8px 0 6px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.1rem;margin:24px 0 8px}
+.sub,.hint{color:var(--muted);margin:0 0 14px}
+.list{display:grid;gap:10px}
+.card{display:block;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:14px 18px;color:var(--ink);font:inherit;cursor:pointer}
+.card:hover:not([disabled]){border-color:var(--ink)}
+.card[disabled]{opacity:.55;cursor:not-allowed}
+.card b{display:block;font-size:1.1rem}.card span{color:var(--muted);font-size:.95rem}
+.link{background:none;border:0;color:var(--muted);font:inherit;cursor:pointer;padding:6px 0;text-decoration:underline}
+.box{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:14px;margin:0 0 12px}
+.box.ok{border-color:var(--good);background:var(--goodbg);color:var(--good)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;background:var(--mark)}
+.btn{background:transparent;color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;margin:0 6px 8px 0}
+.btn:hover{border-color:var(--ink)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.lb{color:var(--muted)}
+.q{font-weight:600;font-size:1.1rem;margin:16px 0 6px}
+.opts{display:grid;gap:8px;margin:0 0 10px}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:12px 16px;font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.opt.good{background:var(--goodbg);border-color:var(--good);color:var(--good)}
+.opt.bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+audio{width:100%;margin:8px 0}
+textarea{width:100%;font:inherit;padding:10px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);resize:vertical;margin:8px 0}
+.card:focus-visible,.btn:focus-visible,.opt:focus-visible,.link:focus-visible,textarea:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+input#un,input#pw{width:100%;font:inherit;padding:10px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin-top:4px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<main id="app"><p class="sub">Loading…</p></main>
+<script>
+var P={
+sayed:{n:"Sayed Abdelaziz",lv:"Basic",info:"44 years old. Bachelor of Physical Education. 24 years of experience repairing air conditioners, fridges and washing machines. Sales representative and sales benefits collector, rank 1 driver, and supervisor of maintenance and architecture work. Married with a family of five.",d:[
+["Introducing myself","My name is Sayed. I am 44 years old. I repair air conditioners, fridges and washing machines. I have twenty-four years of experience.","How many years of experience does Sayed have?",["14","24","44"],1,"Introduce yourself: your name, age, job and years of experience."],
+["With a customer","Good morning. What is the problem with your washing machine? It makes a loud noise. I will check it today.","What is the problem?",["It is too cold","It makes a loud noise","It does not turn on"],1,"Ask a customer about the problem with their fridge or air conditioner. Then say what you will do."],
+["My family","I am married and I have a family of five. We live together in a small flat. On Friday we eat lunch together.","How many people are in the family?",["3","5","7"],1,"Talk about your family: who they are and what you do together."],
+["Sales and payments","I am also a sales representative. I visit customers and collect the payments. Please pay half today and half next month.","When is the second half paid?",["Today","Next month","Next year"],1,"Explain the price to a customer and ask them to pay."],
+["Leading my team","I supervise the maintenance team. Today we paint the building and fix the lights. Please finish the work before five o’clock.","When must the work be finished?",["Before three","Before five","Before seven"],1,"Give your team three instructions for today’s work."]]},
+nermeen:{n:"Nermeen Sayed",lv:"Intermediate",info:"16 years old. Studying in the technical department at high school. She always hoped to join a flight or airways academy but could not achieve it. She has decided to improve her spoken English.",d:[
+["Introducing myself","My name is Nermeen Sayed and I’m sixteen. I study in the technical department at high school, and I want to improve my spoken English.","What does Nermeen want to improve?",["Her maths","Her spoken English","Her drawing"],1,"Introduce yourself and say why you want to improve your English."],
+["My dream","I’ve always dreamed of joining an airline academy. I couldn’t do it, but I haven’t given up on aviation.","What has Nermeen always dreamed of?",["Joining an airline academy","Becoming a teacher","Studying medicine"],0,"Describe your dream and how you feel about it today."],
+["At the airport","Good morning. May I see your passport and boarding pass, please? Your gate is B12, and boarding starts at ten thirty.","Which gate is it?",["A4","B12","C20"],1,"Role-play: you work at the airport. Greet a passenger and tell them their gate."],
+["On the plane","Ladies and gentlemen, welcome aboard flight 215 to Dubai. Please fasten your seat belts and turn off your mobile phones.","Where is the flight going?",["Dubai","Cairo","Riyadh"],0,"Welcome passengers and give two safety instructions, like a flight attendant."],
+["My plan","Next year I plan to practise English every day and watch aviation videos. In the future, I’d like to work in the airline industry.","What does she plan to do every day?",["Practise English","Travel abroad","Study chemistry"],0,"Talk about your plan for the future and how you will reach it."]]},
+yasmeen:{n:"Yasmeen Sayed",lv:"Advanced",info:"First-year student of Information Technology at Beni Suef University. Eager to try new things and learn about innovations. Interested in programming, coding, machine learning and AI. Always excited to learn new skills and improve herself.",d:[
+["Introducing myself","I’m Yasmeen Sayed, a first-year Information Technology student at Beni Suef University. I’m eager to try new things and learn about innovation.","What does Yasmeen study?",["Information Technology","Medicine","Law"],0,"Introduce yourself, your university and what motivates you."],
+["Why programming","I’m interested in programming because it lets me turn an idea into something that works. Lately I’ve been practising Python every evening.","Which language is she practising?",["Java","Python","C++"],1,"Explain why you enjoy programming and what you have built or want to build."],
+["Machine learning","Machine learning means teaching computers to find patterns in data instead of giving them fixed rules. It powers recommendations and voice assistants.","What does machine learning teach computers to do?",["Find patterns in data","Print documents","Draw pictures"],0,"Explain machine learning in your own words to a friend."],
+["AI and society","Artificial intelligence can save time and help people learn, but we should also think carefully about privacy and fairness.","What should we also think about?",["Privacy and fairness","Colours","Prices"],0,"Give your opinion: is AI more helpful or more risky? Give two reasons."],
+["Five years from now","In five years, I hope to be working on AI projects and sharing what I’ve learned with other students.","What does she hope to share?",["What she has learned","Her salary","Her homework"],0,"Describe where you see yourself in five years and how you will get there."]]}};
+var app=document.getElementById("app"),db=null,isT=false,who=null,view="picker",prog={},cm={},started=false,dict=null,dOff=[];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function today(){return new Date().toLocaleDateString("en-CA")}
+function ds(s,n){var p=prog[s];return(p&&p.days&&p.days[n])||{}}
+function isDone(s,n){var x=ds(s,n);return !!(x.ld&&x.sd)}
+function isOpen(s,n){var c=cm[s+"_"+n];return n===1||(isDone(s,n-1)&&ds(s,n-1).on<today())||!!(c&&c.open)}
+function count(s){var c=0;for(var n=1;n<=5;n++)if(isDone(s,n))c++;return c}
+function note(t){var e=document.getElementById("inf");if(e)e.textContent=t}
+function render(){if(document.activeElement&&document.activeElement.tagName==="TEXTAREA")return;if(view==="picker")showPicker();else if(view==="home")showHome(who);else if(view==="teacher")showTeacher()}
+function ul(v){var m=0;if(v<0){v=-v;m=128}if(v>32635)v=32635;v+=132;var e=7,k=16384;while(e>0&&!(v&k)){e--;k>>=1}return(~(m|(e<<4)|((v>>(e+3))&15)))&255}
+function compress(buf){var n=Math.ceil(Math.min(buf.duration,60)*8000),oc=new OfflineAudioContext(1,n,8000),sr=oc.createBufferSource();sr.buffer=buf;sr.connect(oc.destination);sr.start();return oc.startRendering().then(function(r){var d=r.getChannelData(0),o=new Uint8Array(d.length);for(var i=0;i<d.length;i++)o[i]=ul(Math.round(Math.max(-1,Math.min(1,d[i]))*32767));return o})}
+function wav(b){var h=new DataView(new ArrayBuffer(58)),t=function(o,x){for(var i=0;i<x.length;i++)h.setUint8(o+i,x.charCodeAt(i))};t(0,"RIFF");h.setUint32(4,50+b.length,true);t(8,"WAVE");t(12,"fmt ");h.setUint32(16,18,true);h.setUint16(20,7,true);h.setUint16(22,1,true);h.setUint32(24,8000,true);h.setUint32(28,8000,true);h.setUint16(32,1,true);h.setUint16(34,8,true);h.setUint16(36,0,true);t(38,"fact");h.setUint32(42,4,true);h.setUint32(46,b.length,true);t(50,"data");h.setUint32(54,b.length,true);return new Blob([h.buffer,b],{type:"audio/wav"})}
+function loadAudio(s,n,x){if(x&&x.aud){var ps=[];for(var i=0;i<x.aud;i++)ps.push(db.doc("rec/"+s+"_"+n+"p"+i).get());return Promise.all(ps).then(function(r){var b=new Uint8Array(x.len),o=0;r.forEach(function(sn){var t=atob(sn.data().b);for(var j=0;j<t.length;j++)b[o++]=t.charCodeAt(j)});return URL.createObjectURL(wav(b))})}return Promise.resolve((x&&x.url)||null)}
+function showPicker(){
+ view="picker";var h='<h1>Daily English Practice</h1><p class="sub">Choose your account. Five days of listening and speaking.</p><div class="list">';
+ for(var k in P)h+='<button class="card" data-s="'+k+'"><b>'+P[k].n+'</b><span>Level: '+P[k].lv+'. '+count(k)+' of 5 days done.</span></button>';
+ if(isT)h+='<button class="card" data-s="teacher"><b>Teacher dashboard</b><span>Listen to recordings, add comments, see progress.</span></button>';
+ app.innerHTML=h+'</div>';
+ app.querySelectorAll(".card").forEach(function(el){el.onclick=function(){var s=el.dataset.s;if(s==="teacher")showTeacher();else{try{localStorage.setItem("ep-who",s)}catch(e){}showHome(s)}}});
+}
+function showHome(s){
+ view="home";who=s;var p=P[s],c=count(s);
+ var h='<button class="link" id="sw">Log out</button><h1>'+p.n+'</h1><p class="sub">Level: '+p.lv+'</p><div class="box">'+p.info+'</div><h2>Progress: '+c+' of 5 days</h2><div class="bar"><i style="width:'+c*20+'%"></i></div><h2>Your 5 days</h2><div class="list">';
+ for(var n=1;n<=5;n++){var op=isOpen(s,n),c2=cm[s+"_"+n],st=isDone(s,n)?"Done":op?"Open now":isDone(s,n-1)?"Opens tomorrow":"Finish the previous day first";
+  h+='<button class="card" data-n="'+n+'"'+(op?'':' disabled')+'><b>Day '+n+': '+p.d[n-1][0]+'</b><span>'+st+(c2&&c2.text?'. New teacher comment.':'')+'</span></button>'}
+ app.innerHTML=h+'</div>';
+ document.getElementById("sw").onclick=function(){auth.signOut()};
+ app.querySelectorAll(".card").forEach(function(el){el.onclick=function(){showDay(s,+el.dataset.n)}});
+}
+function showDay(s,n){
+ view="day";var p=P[s],d=p.d[n-1];
+ function S(){prog[s]=prog[s]||{days:{}};prog[s].days=prog[s].days||{};return prog[s].days[n]=prog[s].days[n]||{}}S();
+ var c=cm[s+"_"+n];
+ app.innerHTML='<button class="link" id="bk">Back to my days</button><h1>Day '+n+': '+d[0]+'</h1>'+
+ '<h2>1. Listening</h2><p class="hint">Listen as many times as you like. Then answer the question.</p><button class="btn pri" id="pl">Listen</button><button class="btn" id="pz">Pause</button><label class="lb"><input type="checkbox" id="sl"> Slow</label>'+
+ '<p class="q">'+d[2]+'</p><div class="opts">'+d[3].map(function(o,i){return '<button class="opt" data-i="'+i+'">'+o+'</button>'}).join("")+'</div><div id="lf"></div>'+
+ '<h2>2. Speaking</h2><div class="box">'+d[5]+'</div><button class="btn pri" id="rc">Record with microphone</button><label class="btn" for="fl">Use my phone’s voice recorder</label><input type="file" id="fl" accept="audio/*" capture hidden>'+
+ '<div id="dc" hidden><button class="btn" id="dk">Speak and get text</button><textarea id="dt" rows="3" placeholder="Your spoken words appear here. You can fix them before saving."></textarea><button class="btn pri" id="ds">Save as text</button></div>'+
+ '<p class="hint" id="inf"></p><audio id="pv" controls hidden></audio><button class="btn pri" id="sv" hidden>Save my recording</button><div id="sd"></div><div id="fin"></div>'+
+ (c&&c.text?'<h2>Comment from your teacher</h2><div class="box">'+esc(c.text)+'</div>':'');
+ var $=function(i){return document.getElementById(i)},opts=app.querySelectorAll(".opt"),blob=null,mr=null,tk=null;
+ function persist(){var st=S();if(st.ld&&st.sd&&!st.on)st.on=today();db.doc("prog/"+s).set(prog[s]).catch(function(e){note("Could not save: "+((e&&e.message)||""))});fin()}
+ function fin(){var st=S();$("fin").innerHTML=(st.ld&&st.sd)?'<div class="box ok">Day complete! '+(n<5?'Day '+(n+1)+' opens tomorrow.':'You finished all 5 days.')+'</div>':''}
+ function showL(){var st=S();if(!st.ld)return;opts.forEach(function(b){b.disabled=true;if(+b.dataset.i===d[4])b.classList.add("good")});$("lf").innerHTML='<div class="box">'+(st.lq?'Correct! ':'Not quite. The answer is: '+d[3][d[4]]+'. ')+'<br><b>Script:</b> '+d[1]+'</div>'}
+ function saveRec(patch){var r=db.doc("rec/"+s+"_"+n);return r.get().then(function(sn){var x=sn.data()||{};for(var k in patch)x[k]=patch[k];x.at=Date.now();return r.set(x)})}
+ function saveAudio(b){var key="rec/"+s+"_"+n+"p",C=150000,np=Math.ceil(b.length/C),ps=[];for(var i=0;i<np;i++){var sl=b.subarray(i*C,(i+1)*C),t="";for(var j=0;j<sl.length;j+=8192)t+=String.fromCharCode.apply(null,sl.subarray(j,j+8192));ps.push(db.doc(key+i).set({b:btoa(t)}))}return Promise.all(ps).then(function(){return saveRec({aud:np,len:b.length})})}
+ function showS(){var st=S();if(!st.sd)return;$("sd").innerHTML='<div class="box">Saved. <button class="btn" id="mine">Open my answer</button><div id="mt"></div></div>';$("mine").onclick=function(){db.doc("rec/"+s+"_"+n).get().then(function(sn){var x=sn.data()||{};loadAudio(s,n,x).then(function(u){if(u){$("pv").src=u;$("pv").hidden=false;$("pv").play()}});$("mt").textContent=x.text?"Your text: "+x.text:""})}}
+ dOff.forEach(function(f){f()});dOff=[];
+ if(dict){var live="";$("dc").hidden=false;
+  $("dk").onclick=function(){if(dict.active()){dict.stop().catch(function(){});return}live=$("dt").value.trim();
+   dict.start({language:"en-US"}).catch(function(e){if(e&&e.code==="unavailable")dict.start().catch(function(){note("Speech to text is not available for your account.")});else note(e&&e.code==="not_granted"?"Microphone access was refused.":"Speech to text did not start.")})};
+  dOff.push(dict.onFinal(function(e){var t=$("dt");if(t){live=(live+" "+e.text).trim();t.value=live}}));
+  dOff.push(dict.onPartial(function(e){var t=$("dt");if(t)t.value=(live+" "+e.text).trim()}));
+  dOff.push(dict.onState(function(e){var b=$("dk");if(b)b.textContent=(e.state==="idle")?"Speak and get text":"Stop"}));
+  $("ds").onclick=function(){var t=$("dt").value.trim();if(!t){note("Speak first, or type your answer.");return}
+   saveRec({text:t}).then(function(){S().sd=true;showS();persist();note("Saved. Your teacher can read it.")}).catch(function(e){note("Could not save: "+((e&&e.message)||""))})}}
+ showL();showS();fin();
+ $("bk").onclick=function(){dOff.forEach(function(f){f()});dOff=[];try{if(dict&&dict.active())dict.stop().catch(function(){})}catch(e){}try{speechSynthesis.cancel()}catch(e){}if(mr&&mr.state==="recording")mr.stop();showHome(s)};
+ $("pl").onclick=function(){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(d[1]);u.lang="en-US";u.rate=$("sl").checked?.65:.9;speechSynthesis.speak(u)}catch(e){}};
+ $("pz").onclick=function(){try{if(speechSynthesis.paused){speechSynthesis.resume();$("pz").textContent="Pause"}else{speechSynthesis.pause();$("pz").textContent="Resume"}}catch(e){}};
+ opts.forEach(function(b){b.onclick=function(){var st=S();if(st.ld)return;st.ld=true;st.lq=(+b.dataset.i===d[4])?1:0;if(!st.lq)b.classList.add("bad");showL();persist()}});
+ var bytes=null;
+ function got(bl){note("Preparing your recording…");bl.arrayBuffer().then(function(ab){var AC=window.AudioContext||window.webkitAudioContext;return new AC().decodeAudioData(ab)}).then(compress).then(function(b){bytes=b;$("pv").src=URL.createObjectURL(wav(b));$("pv").hidden=false;$("sv").hidden=false;note("Listen to yourself, then save. Up to 60 seconds are kept.")}).catch(function(){note("This audio could not be read. Please record again.")})}
+ $("fl").onchange=function(){if(this.files[0])got(this.files[0])};
+ $("rc").onclick=function(){
+  if(mr&&mr.state==="recording"){mr.stop();return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+   var ch=[],secs=0;try{mr=new MediaRecorder(stream,{audioBitsPerSecond:16000})}catch(e){mr=new MediaRecorder(stream)}
+   mr.ondataavailable=function(e){ch.push(e.data)};
+   mr.onstop=function(){stream.getTracks().forEach(function(t){t.stop()});clearInterval(tk);$("rc").textContent="Record again";got(new Blob(ch,{type:mr.mimeType||"audio/webm"}))};
+   mr.start();$("rc").textContent="Stop";tk=setInterval(function(){secs++;note("Recording… "+secs+" s (up to 40 s)");if(secs>=40)mr.stop()},1000);
+  }).catch(function(e){var m=e&&e.name;note(m==="NotFoundError"?"No microphone was found on this device.":(m==="NotAllowedError"||m==="SecurityError")?"The browser blocked the microphone for this page. If you see a microphone icon in the address bar, allow it. Otherwise use Speak and get text.":"Recording did not start ("+m+"). Use Speak and get text or upload a file.")});
+ };
+ $("sv").onclick=function(){if(!bytes)return;note("Saving…");saveAudio(bytes).then(function(){S().sd=true;$("sv").hidden=true;showS();persist();note("Saved. Your teacher can now listen.")}).catch(function(e){note("Could not save: "+((e&&e.message)||""))})};
+}
+function showTeacher(){
+ view="teacher";var h='<button class="link" id="sw">Log out</button><h1>Teacher dashboard</h1><p class="sub">Listen to recordings, write comments and corrections, or open a day early.</p>';
+ for(var s in P){var p=P[s];h+='<h2>'+p.n+' ('+p.lv+'): '+count(s)+' of 5 days</h2><div class="bar"><i style="width:'+count(s)*20+'%"></i></div>';
+  for(var n=1;n<=5;n++){var x=ds(s,n),k=s+"_"+n,c=cm[k]||{};
+   h+='<div class="box"><b>Day '+n+': '+p.d[n-1][0]+'</b><br><span class="hint">Listening: '+(x.ld?(x.lq?"correct":"wrong"):"not done")+'. Speaking: '+(x.sd?"recorded":"not done")+'.</span>'+
+   (x.sd?'<br><button class="btn" data-pl="'+k+'">Open recording or text</button><audio controls hidden></audio><div class="hint"></div>':'')+
+   '<textarea rows="2" data-c="'+k+'" placeholder="Your comment or correction…">'+esc(c.text||"")+'</textarea><button class="btn pri" data-sc="'+k+'">Save comment</button>'+(isOpen(s,n)?'':'<button class="btn" data-op="'+k+'">Open this day now</button>')+'</div>'}}
+ app.innerHTML=h;
+ document.getElementById("sw").onclick=function(){auth.signOut()};
+ app.querySelectorAll("[data-pl]").forEach(function(b){b.onclick=function(){db.doc("rec/"+b.dataset.pl).get().then(function(sn){var x=sn.data()||{},a=b.nextElementSibling;var kk=b.dataset.pl.split("_");loadAudio(kk[0],+kk[1],x).then(function(u){if(u){a.src=u;a.hidden=false;a.play()}});a.nextElementSibling.textContent=x.text?"Student text: "+x.text:((x.url||x.aud)?"":"Nothing saved yet.")})}});
+ app.querySelectorAll("[data-sc]").forEach(function(b){b.onclick=function(){var k=b.dataset.sc,ta=app.querySelector('textarea[data-c="'+k+'"]'),o=!!(cm[k]&&cm[k].open);db.doc("cm/"+k).set({text:ta.value,open:o}).then(function(){cm[k]={text:ta.value,open:o};b.textContent="Saved"})}});
+ app.querySelectorAll("[data-op]").forEach(function(b){b.onclick=function(){var k=b.dataset.op,t=(cm[k]&&cm[k].text)||"";db.doc("cm/"+k).set({text:t,open:true}).then(function(){cm[k]={text:t,open:true};showTeacher()})}});
+}
+function begin(){
+ if(started)return;started=true;var s=null;try{s=localStorage.getItem("ep-who")}catch(e){}
+ if(s&&P[s])showHome(s);else showPicker();
+}
+
+/* ===== Firebase settings: paste your own values here (see the setup steps) ===== */
+var cfg={apiKey:"AIzaSyAEcYdH_J4ZyhIRin8oOy3xd6IarIrXLd8",authDomain:"speak-up-cd91e.firebaseapp.com",projectId:"speak-up-cd91e",appId:"1:904089889181:web:118110c4557f1d56c96774"};
+/* ================================================================================= */
+var DOM="@english.app",auth=null,fsd=null,unsubs=[];
+function mapPath(p){return p.replace(/^prog\//,"progress/").replace(/^cm\//,"comments/")}
+function initDb(){db={doc:function(p){var r=fsd.doc(mapPath(p));return{get:function(){return r.get().then(function(sn){return{data:function(){return sn.data()}}})},set:function(d){return r.set(d)}}}}}
+function begin(){if(started)return;started=true;if(isT)showTeacher();else showHome(who)}
+function loginView(msg){
+ view="login";app.innerHTML='<h1>Daily English Practice</h1><p class="sub">Log in with the username and password your teacher gave you.</p><div class="box"><label>Username<br><input id="un" autocomplete="username" autocapitalize="none"></label><br><br><label>Password<br><input id="pw" type="password" autocomplete="current-password"></label><p class="hint" id="inf">'+(msg||"")+'</p><button class="btn pri" id="li">Log in</button></div>';
+ var go=function(){var u=document.getElementById("un").value.trim().toLowerCase();note("Logging in…");auth.signInWithEmailAndPassword(u+DOM,document.getElementById("pw").value).catch(function(){note("Wrong username or password.")})};
+ document.getElementById("li").onclick=go;document.getElementById("pw").onkeydown=function(e){if(e.key==="Enter")go()};
+}
+function startData(u){
+ var need=isT?2:6,got=0;
+ function once(fn){var d=false;return function(x){fn(x);if(!d){d=true;if(++got>=need)begin()}else render()}}
+ var err=function(){if(!started)begin()};
+ if(isT){
+  unsubs.push(fsd.collection("progress").onSnapshot(once(function(q){q.docs.forEach(function(d){prog[d.id]=d.data()})}),err));
+  unsubs.push(fsd.collection("comments").onSnapshot(once(function(q){q.docs.forEach(function(d){cm[d.id]=d.data()})}),err));
+ }else{
+  unsubs.push(fsd.doc("progress/"+u).onSnapshot(once(function(sn){if(sn.exists)prog[u]=sn.data()}),err));
+  for(var n=1;n<=5;n++)(function(k){unsubs.push(fsd.doc("comments/"+k).onSnapshot(once(function(sn){if(sn.exists)cm[k]=sn.data()}),err))})(u+"_"+n);
+ }
+ setTimeout(begin,6000);
+}
+(function(){
+ if(typeof firebase==="undefined"||cfg.apiKey.indexOf("PASTE")===0){app.innerHTML='<h1>Setup needed</h1><p class="sub">Open this file in a text editor and paste your Firebase settings near the top of the script, then upload it again.</p>';return}
+ firebase.initializeApp(cfg);auth=firebase.auth();fsd=firebase.firestore();initDb();
+ auth.onAuthStateChanged(function(user){
+  unsubs.forEach(function(f){f()});unsubs=[];started=false;prog={};cm={};
+  if(!user){loginView();return}
+  var u=(user.email||"").split("@")[0];
+  if(u==="teacher"){isT=true;who=null}else if(P[u]){isT=false;who=u}else{auth.signOut();return}
+  startData(u);
+ });
+})();
+</script>
+</body>
+</html>
