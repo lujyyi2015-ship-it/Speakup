@@ -50,7 +50,7 @@ input#un,input#pw{width:100%;font:inherit;padding:10px;border:2px solid var(--li
 </head>
 <body>
 <main id="app"><p class="sub">Loading…</p></main>
-<p class="hint" style="text-align:center;font-size:.8rem">Version 6: word highlight, hidden script</p>
+<p class="hint" style="text-align:center;font-size:.8rem">Version 7: Day 6 final interview</p>
 <script>
 var P={
 sayed:{n:"Sayed Abdelaziz",info:"44 years old. Bachelor of Physical Education. 24 years of experience repairing air conditioners, fridges and washing machines. Sales representative and sales benefits collector, rank 1 driver, and supervisor of maintenance and architecture work. Married with a family of five.",d:[
@@ -71,13 +71,16 @@ yasmeen:{n:"Yasmeen Sayed",info:"First-year student of Information Technology at
 ["Machine learning",["Machine learning teaches computers to find patterns in data.","Machine learning means teaching computers to find patterns in data, not just follow fixed rules.","Machine learning is a branch of AI in which computers are trained to detect patterns in data rather than follow fixed rules. It powers voice assistants and recommendations."],"What does machine learning teach computers to do?",["Find patterns in data","Print documents","Draw pictures"],0,"Explain machine learning in your own words to a friend.","Machine learning means teaching computers to find patterns in data instead of giving them fixed rules. It helps voice assistants and recommendations."],
 ["AI and society",["AI is useful. We must think about privacy and fairness.","AI can save time and help people learn, but we should also think about privacy and fairness.","Although artificial intelligence can save time and support learning, we must also give careful thought to privacy and fairness."],"What should we also think about?",["Privacy and fairness","Colours","Prices"],0,"Give your opinion: is AI more helpful or more risky? Give two reasons.","Artificial intelligence can save time and help people learn, but we should also think carefully about privacy and fairness."],
 ["Five years from now",["In five years, I want to work on AI. I will share what I learned.","In five years, I hope to work on AI projects and share what I’ve learned with other students.","Five years from now, I hope to be working on AI projects and sharing everything I’ve learned with fellow students."],"What does she hope to share?",["What she has learned","Her salary","Her homework"],0,"Describe where you see yourself in five years and how you will get there.","In five years, I hope to work on AI projects and share what I have learned with other students."]]}};
+P.sayed.d.push(["Final interview",["What is your name and how old are you?","What do you do for work, and how long have you been doing it?","Tell me about your family.","A customer says their fridge is not working. What do you say to them?","What do you do as a sales representative?","How do you lead your team during the day?"],"",[],0,"",""]);
+P.nermeen.d.push(["Final interview",["What is your name and how old are you?","What do you study, and why do you want to improve your English?","What is your dream?","Imagine you work at the airport. What do you say to a passenger?","How do you welcome passengers on the plane?","What is your plan for the future?"],"",[],0,"",""]);
+P.yasmeen.d.push(["Final interview",["Who are you, and what do you study?","Why do you enjoy programming?","Can you explain machine learning in simple words?","Is AI more helpful or more risky? Why?","Where do you hope to be in five years?","What is one thing you learnt this week?"],"",[],0,"",""]);
 var app=document.getElementById("app"),db=null,isT=false,who=null,view="picker",prog={},cm={},started=false,dict=null,dOff=[];
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function today(){return new Date().toLocaleDateString("en-CA")}
 function ds(s,n){var p=prog[s];return(p&&p.days&&p.days[n])||{}}
 function isDone(s,n){var x=ds(s,n);return !!(x.ld&&x.sd&&x.fd)}
 function isOpen(s,n){var c=cm[s+"_"+n]||{};if(c.closed)return false;return n===1||(isDone(s,n-1)&&ds(s,n-1).on<today())||!!c.open}
-function count(s){var c=0;for(var n=1;n<=5;n++)if(isDone(s,n))c++;return c}
+function count(s){var c=0;for(var n=1;n<=6;n++)if(isDone(s,n))c++;return c}
 function note(t){var e=document.getElementById("inf");if(e)e.textContent=t}
 function render(){if(document.activeElement&&document.activeElement.tagName==="TEXTAREA")return;if(view==="picker")showPicker();else if(view==="home")showHome(who);else if(view==="teacher")showTeacher()}
 function ul(v){var m=0;if(v<0){v=-v;m=128}if(v>32635)v=32635;v+=132;var e=7,k=16384;while(e>0&&!(v&k)){e--;k>>=1}return(~(m|(e<<4)|((v>>(e+3))&15)))&255}
@@ -86,15 +89,15 @@ function wav(b){var h=new DataView(new ArrayBuffer(58)),t=function(o,x){for(var 
 function loadAudio(s,n,x,sf){sf=sf||"";if(x&&x.aud){var ps=[];for(var i=0;i<x.aud;i++)ps.push(db.doc("rec/"+s+"_"+n+sf+"p"+i).get());return Promise.all(ps).then(function(r){var b=new Uint8Array(x.len),o=0;r.forEach(function(sn){var t=atob(sn.data().b);for(var j=0;j<t.length;j++)b[o++]=t.charCodeAt(j)});return URL.createObjectURL(wav(b))})}return Promise.resolve((x&&x.url)||null)}
 function showPicker(){
  view="picker";var h='<h1>Daily English Practice</h1><p class="sub">Choose your account. Five days of listening and speaking.</p><div class="list">';
- for(var k in P)h+='<button class="card" data-s="'+k+'"><b>'+P[k].n+'</b><span>Level: '+P[k].lv+'. '+count(k)+' of 5 days done.</span></button>';
+ for(var k in P)h+='<button class="card" data-s="'+k+'"><b>'+P[k].n+'</b><span>Level: '+P[k].lv+'. '+count(k)+' of 6 days done.</span></button>';
  if(isT)h+='<button class="card" data-s="teacher"><b>Teacher dashboard</b><span>Listen to recordings, add comments, see progress.</span></button>';
  app.innerHTML=h+'</div>';
  app.querySelectorAll(".card").forEach(function(el){el.onclick=function(){var s=el.dataset.s;if(s==="teacher")showTeacher();else{try{localStorage.setItem("ep-who",s)}catch(e){}showHome(s)}}});
 }
 function showHome(s){
  view="home";who=s;var p=P[s],c=count(s);
- var h='<button class="link" id="sw">Log out</button><h1>'+p.n+'</h1><p class="sub">Each day: listen at three levels, then record two answers.</p><div class="box">'+p.info+'</div><h2>Progress: '+c+' of 5 days</h2><div class="bar"><i style="width:'+c*20+'%"></i></div><h2>Your 5 days</h2><div class="list">';
- for(var n=1;n<=5;n++){var op=isOpen(s,n),c2=cm[s+"_"+n],st=isDone(s,n)?"Done":(c2&&c2.closed)?"Closed by your teacher":op?"Open now":isDone(s,n-1)?"Opens tomorrow":"Finish the previous day first";
+ var h='<button class="link" id="sw">Log out</button><h1>'+p.n+'</h1><p class="sub">Each day: listen at three levels, then record two answers.</p><div class="box">'+p.info+'</div><h2>Progress: '+c+' of 6 days</h2><div class="bar"><i style="width:'+Math.round(c*100/6)+'%"></i></div><h2>Your 6 days</h2><div class="list">';
+ for(var n=1;n<=6;n++){var op=isOpen(s,n),c2=cm[s+"_"+n],st=isDone(s,n)?"Done":(c2&&c2.closed)?"Closed by your teacher":op?"Open now":isDone(s,n-1)?"Opens tomorrow":"Finish the previous day first";
   h+='<button class="card" data-n="'+n+'"'+(op?'':' disabled')+'><b>Day '+n+': '+p.d[n-1][0]+'</b><span>'+st+(c2&&c2.text?'. New teacher comment.':'')+'</span></button>'}
  app.innerHTML=h+'</div>';
  document.getElementById("sw").onclick=function(){auth.signOut()};
@@ -104,14 +107,15 @@ function fmt(x){x=Math.round(x||0);return x<60?x+" s":Math.floor(x/60)+" min "+(
 function showDay(s,n){
  view="day";var p=P[s],d=p.d[n-1],t0={},c=cm[s+"_"+n],LV=["Level 1: Basic","Level 2: Intermediate","Level 3: Advanced"];
  function S(){prog[s]=prog[s]||{days:{}};prog[s].days=prog[s].days||{};return prog[s].days[n]=prog[s].days[n]||{}}S();
- var st0=S(),hide=!!(st0.sd&&!st0.fd),words=d[6].split(" ");
- function recBox(t,title,body,locked){if(locked)return '<h2>'+title+'</h2><p class="hint">Finish the script recording first.</p>';return '<h2>'+title+'</h2>'+body+'<button class="btn pri" id="rc'+t+'">Record with microphone</button><label class="btn" for="fl'+t+'">Use my phone’s voice recorder</label><input type="file" id="fl'+t+'" accept="audio/*" capture hidden><p class="hint" id="inf'+t+'"></p><audio id="pv'+t+'" controls hidden></audio><button class="btn pri" id="sv'+t+'" hidden>Save my recording</button><div id="sd'+t+'"></div>'}
+ var fin6=n===6,st0=S(),hide=!fin6&&!!(st0.sd&&!st0.fd),words=(d[6]||"").split(" ");
+ function qlist(a,b){return '<div class="box">'+d[1].slice(a,b).map(function(q,i){return (a+i+1)+'. '+esc(q)}).join("<br>")+'<br><span class="hint">Do not read. Answer in your own words.</span></div>'}
+ function recBox(t,title,body,locked){if(locked)return '<h2>'+title+'</h2><p class="hint">'+locked+'</p>';return '<h2>'+title+'</h2>'+body+'<button class="btn pri" id="rc'+t+'">Record with microphone</button><label class="btn" for="fl'+t+'">Use my phone’s voice recorder</label><input type="file" id="fl'+t+'" accept="audio/*" capture hidden><p class="hint" id="inf'+t+'"></p><audio id="pv'+t+'" controls hidden></audio><button class="btn pri" id="sv'+t+'" hidden>Save my recording</button><div id="sd'+t+'"></div>'}
  app.innerHTML='<button class="link" id="bk">Back to my days</button><h1>Day '+n+': '+d[0]+'</h1>'+
- '<h2>1. Listening</h2><p class="hint">Listen to all three levels, from easiest to hardest. Then answer the question.</p>'+
- d[1].map(function(x,i){return '<button class="btn" data-lv="'+i+'">'+LV[i]+'</button>'}).join("")+'<button class="btn" id="pz">Pause</button><label class="lb"><input type="checkbox" id="sl"> Slow</label>'+
+ (fin6?'<h2>1. Listen to the interviewer</h2><p class="hint">Listen to all six questions. Use what you learnt in Days 1 to 5 to answer: '+p.d.slice(0,5).map(function(x){return x[0]}).join(", ")+'.</p>':'<h2>1. Listening</h2><p class="hint">Listen to all three levels, from easiest to hardest. Then answer the question.</p>')+
+ d[1].map(function(x,i){return '<button class="btn" data-lv="'+i+'">'+(fin6?"Question "+(i+1):LV[i])+'</button>'}).join("")+'<button class="btn" id="pz">Pause</button><label class="lb"><input type="checkbox" id="sl"> Slow</label>'+
  '<p class="hint" id="lh"></p><p class="q">'+d[2]+'</p><div class="opts">'+d[3].map(function(o,i){return '<button class="opt" data-i="'+i+'">'+o+'</button>'}).join("")+'</div><div id="lf"></div>'+
- recBox("s","2. Speaking: read the script",hide?'<div class="box hint">Your script is hidden now, so you can speak without it.</div>':'<div class="box script" id="scr">'+words.map(function(w){return '<span class="w">'+esc(w)+'</span>'}).join(" ")+'</div><button class="btn" id="hear">Hear it</button><button class="btn" id="ra">Read along</button><button class="btn" id="hst">Stop</button><label class="lb">Pace <select id="hp"><option value="n">Natural</option><option value="slow">Slower</option></select></label>')+
- recBox("f","3. Speaking: no script",'<div class="box">'+d[5]+'<br><span class="hint">Do not read. Say it in your own words.</span></div>',!st0.sd)+
+ recBox("s",fin6?"2. Speaking: answer questions 1 to 3":"2. Speaking: read the script",fin6?qlist(0,3):hide?'<div class="box hint">Your script is hidden now, so you can speak without it.</div>':'<div class="box script" id="scr">'+words.map(function(w){return '<span class="w">'+esc(w)+'</span>'}).join(" ")+'</div><button class="btn" id="hear">Hear it</button><button class="btn" id="ra">Read along</button><button class="btn" id="hst">Stop</button><label class="lb">Pace <select id="hp"><option value="n">Natural</option><option value="slow">Slower</option></select></label>',fin6&&!st0.ld?"Listen to all the questions first.":"")+
+ recBox("f",fin6?"3. Speaking: answer questions 4 to 6":"3. Speaking: no script",fin6?qlist(3,6):'<div class="box">'+d[5]+'<br><span class="hint">Do not read. Say it in your own words.</span></div>',fin6?(!st0.ld?"Listen to all the questions first.":""):(!st0.sd?"Finish the script recording first.":""))+
  '<div id="fin"></div>'+(c&&c.text?'<h2>Comment from your teacher</h2><div class="box">'+esc(c.text)+'</div>':'');
  var $=function(i){return document.getElementById(i)},opts=app.querySelectorAll(".opt");
  var ws=Array.from(app.querySelectorAll("#scr .w")),hl={tm:null,run:false};
@@ -126,9 +130,9 @@ function showDay(s,n){
  function startT(k){if(!t0[k])t0[k]=Date.now()}
  function stopT(k){return t0[k]?Math.round((Date.now()-t0[k])/1000):0}
  function persist(){var st=S();if(st.ld&&st.sd&&st.fd&&!st.on)st.on=today();db.doc("prog/"+s).set(prog[s]).catch(function(e){note("Could not save: "+((e&&e.message)||""))});fin()}
- function fin(){var st=S();$("fin").innerHTML=(st.ld&&st.sd&&st.fd)?'<div class="box ok">Day complete! '+(n<5?'Day '+(n+1)+' opens tomorrow.':'You finished all 5 days.')+'</div>':''}
- function lock(){var st=S(),pl=st.pl||[0,0,0],k=pl[0]+pl[1]+pl[2];opts.forEach(function(b){b.disabled=!(k===3||st.ld)});$("lh").textContent=st.ld?"":k===3?"Now answer the question.":"Listen to all three levels to unlock the question ("+k+" of 3).";app.querySelectorAll("[data-lv]").forEach(function(b){var i=+b.dataset.lv;b.textContent=LV[i]+(pl[i]?" ✓":"")})}
- function showL(){var st=S();if(!st.ld)return;opts.forEach(function(b){b.disabled=true;if(+b.dataset.i===d[4])b.classList.add("good")});$("lf").innerHTML='<div class="box">'+(st.lq?'Correct! ':'Not quite. The answer is: '+d[3][d[4]]+'. ')+(hide?'':'<br>'+d[1].map(function(x,i){return '<b>'+LV[i]+':</b> '+x}).join("<br>"))+'</div>'}
+ function fin(){var st=S();$("fin").innerHTML=(st.ld&&st.sd&&st.fd)?'<div class="box ok">Day complete! '+(n<6?'Day '+(n+1)+' opens tomorrow.':'You finished all 6 days.')+'</div>':''}
+ function lock(){var st=S(),N=d[1].length,pl=st.pl||[],k=0;for(var j=0;j<N;j++)k+=pl[j]?1:0;opts.forEach(function(b){b.disabled=!(k===N||st.ld)});$("lh").textContent=st.ld?"":fin6?"Listened to "+k+" of "+N+" questions.":k===N?"Now answer the question.":"Listen to all three levels to unlock the question ("+k+" of 3).";app.querySelectorAll("[data-lv]").forEach(function(b){var i=+b.dataset.lv;b.textContent=(fin6?"Question "+(i+1):LV[i])+(pl[i]?" ✓":"")})}
+ function showL(){var st=S();if(!st.ld||fin6)return;opts.forEach(function(b){b.disabled=true;if(+b.dataset.i===d[4])b.classList.add("good")});$("lf").innerHTML='<div class="box">'+(st.lq?'Correct! ':'Not quite. The answer is: '+d[3][d[4]]+'. ')+(hide?'':'<br>'+d[1].map(function(x,i){return '<b>'+LV[i]+':</b> '+x}).join("<br>"))+'</div>'}
  function saveRec(patch,sf){var r=db.doc("rec/"+s+"_"+n+sf);return r.get().then(function(sn){var x=sn.data()||{};for(var k in patch)x[k]=patch[k];x.at=Date.now();return r.set(x)})}
  function saveAudio(b,sf){var key="rec/"+s+"_"+n+sf+"p",C=150000,np=Math.ceil(b.length/C),ps=[];for(var i=0;i<np;i++){var sl=b.subarray(i*C,(i+1)*C),t="";for(var j=0;j<sl.length;j+=8192)t+=String.fromCharCode.apply(null,sl.subarray(j,j+8192));ps.push(db.doc(key+i).set({b:btoa(t)}))}return Promise.all(ps).then(function(){return saveRec({aud:np,len:b.length},sf)})}
  function showR(t){var st=S(),sf=t==="s"?"":"b";if(!st[t==="s"?"sd":"fd"])return;$("sd"+t).innerHTML='<div class="box">Saved. <button class="btn" id="mine'+t+'">Open my recording</button></div>';$("mine"+t).onclick=function(){db.doc("rec/"+s+"_"+n+sf).get().then(function(sn){loadAudio(s,n,sn.data()||{},sf).then(function(u){if(u){$("pv"+t).src=u;$("pv"+t).hidden=false;$("pv"+t).play()}})})}}
@@ -146,21 +150,21 @@ function showDay(s,n){
     mr.start();$("rc"+t).textContent="Stop";if(t==="s")hlRun();tk=setInterval(function(){secs++;nt("Recording… "+secs+" s (up to 60 s)");if(secs>=60)mr.stop()},1000);
    }).catch(function(e){var m=e&&e.name;nt(m==="NotFoundError"?"No microphone was found on this device.":(m==="NotAllowedError"||m==="SecurityError")?"The browser blocked the microphone. Allow it in the address bar, or use the phone voice recorder button.":"Recording did not start ("+m+"). Use the phone voice recorder button.")});
   };
-  $("sv"+t).onclick=function(){if(!bytes)return;nt("Saving…");saveAudio(bytes,sf).then(function(){var st=S();st[t==="s"?"sd":"fd"]=true;st[t==="s"?"ts":"tf"]=stopT(t);st[t==="s"?"as":"af"]=Math.round(bytes.length/8000);$("sv"+t).hidden=true;showR(t);persist();if(t==="s"){showDay(s,n);$("infs").textContent="Saved. Now do the no-script recording below."}else nt("Saved. Your teacher can now listen.")}).catch(function(e){nt("Could not save: "+((e&&e.message)||""))})};
+  $("sv"+t).onclick=function(){if(!bytes)return;nt("Saving…");saveAudio(bytes,sf).then(function(){var st=S();st[t==="s"?"sd":"fd"]=true;st[t==="s"?"ts":"tf"]=stopT(t);st[t==="s"?"as":"af"]=Math.round(bytes.length/8000);$("sv"+t).hidden=true;showR(t);persist();if(t==="s"&&!fin6){showDay(s,n);$("infs").textContent="Saved. Now do the no-script recording below."}else nt("Saved. Your teacher can now listen.")}).catch(function(e){nt("Could not save: "+((e&&e.message)||""))})};
  }
  $("bk").onclick=function(){hlStop(false);try{speechSynthesis.cancel()}catch(e){}showHome(s)};
- app.querySelectorAll("[data-lv]").forEach(function(b){b.onclick=function(){var i=+b.dataset.lv,st=S();startT("l");try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(d[1][i]);u.lang="en-US";u.rate=$("sl").checked?.65:.9;speechSynthesis.speak(u)}catch(e){}if(!st.pl)st.pl=[0,0,0];if(!st.pl[i]){st.pl[i]=1;persist()}lock()}});
+ app.querySelectorAll("[data-lv]").forEach(function(b){b.onclick=function(){var i=+b.dataset.lv,st=S();startT("l");try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(d[1][i]);u.lang="en-US";u.rate=$("sl").checked?.65:.9;speechSynthesis.speak(u)}catch(e){}if(!st.pl)st.pl=d[1].map(function(){return 0});if(!st.pl[i]){st.pl[i]=1;if(fin6&&st.pl.every(Boolean)){st.ld=true;st.lq=1;st.tl=stopT("l");persist();showDay(s,n);return}persist()}lock()}});
  $("pz").onclick=function(){try{if(speechSynthesis.paused){speechSynthesis.resume();$("pz").textContent="Pause"}else{speechSynthesis.pause();$("pz").textContent="Resume"}}catch(e){}};
  opts.forEach(function(b){b.onclick=function(){var st=S();if(st.ld||b.disabled)return;st.ld=true;st.lq=(+b.dataset.i===d[4])?1:0;st.tl=stopT("l");if(!st.lq)b.classList.add("bad");showL();persist()}});
- rec("s");if(st0.sd)rec("f");lock();showL();showR("s");showR("f");fin();
+ if(!(fin6&&!st0.ld))rec("s");if(fin6?st0.ld:st0.sd)rec("f");lock();showL();showR("s");showR("f");fin();
 }
 function showTeacher(){
  view="teacher";var h='<button class="link" id="sw">Log out</button><h1>Teacher dashboard</h1><p class="sub">Listen to recordings, write comments and corrections, or open a day early.</p>';
- for(var s in P){var p=P[s];h+='<h2>'+p.n+': '+count(s)+' of 5 days</h2><div class="bar"><i style="width:'+count(s)*20+'%"></i></div>';
-  for(var n=1;n<=5;n++){var x=ds(s,n),k=s+"_"+n,c=cm[k]||{},tot=(x.tl||0)+(x.ts||0)+(x.tf||0);
-   h+='<div class="box"><b>Day '+n+': '+p.d[n-1][0]+'</b><br><span class="hint">Listening: '+(x.ld?(x.lq?"correct":"wrong")+", took "+fmt(x.tl):"not done")+'<br>Reading the script: '+(x.sd?"took "+fmt(x.ts)+", audio "+fmt(x.as):"not done")+'<br>No script: '+(x.fd?"took "+fmt(x.tf)+", audio "+fmt(x.af):"not done")+(tot?'<br>Total time: '+fmt(tot):'')+'</span>'+
-   (x.sd?'<br><button class="btn" data-pl="'+k+'" data-sf="">Play script recording</button><audio controls hidden></audio>':'')+
-   (x.fd?'<br><button class="btn" data-pl="'+k+'" data-sf="b">Play no-script recording</button><audio controls hidden></audio>':'')+
+ for(var s in P){var p=P[s];h+='<h2>'+p.n+': '+count(s)+' of 6 days</h2><div class="bar"><i style="width:'+Math.round(count(s)*100/6)+'%"></i></div>';
+  for(var n=1;n<=6;n++){var x=ds(s,n),k=s+"_"+n,c=cm[k]||{},tot=(x.tl||0)+(x.ts||0)+(x.tf||0);
+   h+='<div class="box"><b>Day '+n+': '+p.d[n-1][0]+'</b><br><span class="hint">Listening: '+(x.ld?(n===6?"done":x.lq?"correct":"wrong")+", took "+fmt(x.tl):"not done")+'<br>'+(n===6?"Part 1 (questions 1 to 3)":"Reading the script")+': '+(x.sd?"took "+fmt(x.ts)+", audio "+fmt(x.as):"not done")+'<br>'+(n===6?"Part 2 (questions 4 to 6)":"No script")+': '+(x.fd?"took "+fmt(x.tf)+", audio "+fmt(x.af):"not done")+(tot?'<br>Total time: '+fmt(tot):'')+'</span>'+
+   (x.sd?'<br><button class="btn" data-pl="'+k+'" data-sf="">'+(n===6?"Play part 1":"Play script recording")+'</button><audio controls hidden></audio>':'')+
+   (x.fd?'<br><button class="btn" data-pl="'+k+'" data-sf="b">'+(n===6?"Play part 2":"Play no-script recording")+'</button><audio controls hidden></audio>':'')+
    '<textarea rows="2" data-c="'+k+'" placeholder="Your comment or correction…">'+esc(c.text||"")+'</textarea><span class="hint" data-st="'+k+'">'+(c.at?"Last saved "+new Date(c.at).toLocaleString():"")+'</span><br><button class="btn pri" data-sc="'+k+'">Save comment</button>'+(c.text?'<button class="btn" data-dc="'+k+'">Delete comment</button>':'')+'<button class="btn" data-tg="'+k+'">'+(isOpen(s,n)?'Close this day':'Open this day now')+'</button></div>'}h+='<button class="btn" data-rs="'+s+'">Reset '+p.n.split(" ")[0]+'’s progress</button>'}
  app.innerHTML=h;
  document.getElementById("sw").onclick=function(){auth.signOut()};
@@ -169,7 +173,7 @@ function showTeacher(){
  app.querySelectorAll("textarea[data-c]").forEach(function(t){t.oninput=function(){var b=app.querySelector('[data-sc="'+t.dataset.c+'"]');if(b)b.textContent="Save comment"}});
  app.querySelectorAll("[data-dc]").forEach(function(b){b.onclick=function(){var k=b.dataset.dc,c=cm[k]||{},o={text:"",open:!!c.open,closed:!!c.closed,at:0};db.doc("cm/"+k).set(o).then(function(){cm[k]=o;showTeacher()})}});
  app.querySelectorAll("[data-tg]").forEach(function(b){b.onclick=function(){var k=b.dataset.tg,q=k.split("_"),c=cm[k]||{},was=isOpen(q[0],+q[1]),o={text:c.text||"",open:!was,closed:was,at:c.at||0};db.doc("cm/"+k).set(o).then(function(){cm[k]=o;showTeacher()})}});
- app.querySelectorAll("[data-rs]").forEach(function(b){b.onclick=function(){var s=b.dataset.rs;if(!confirm("Delete all progress, recordings and comments for "+P[s].n+"? This cannot be undone."))return;resetStudent(s).then(function(){delete prog[s];for(var n=1;n<=5;n++)delete cm[s+"_"+n];showTeacher()}).catch(function(){alert("Could not reset. Please publish the new security rules in Firebase first.")})}});
+ app.querySelectorAll("[data-rs]").forEach(function(b){b.onclick=function(){var s=b.dataset.rs;if(!confirm("Delete all progress, recordings and comments for "+P[s].n+"? This cannot be undone."))return;resetStudent(s).then(function(){delete prog[s];for(var n=1;n<=6;n++)delete cm[s+"_"+n];showTeacher()}).catch(function(){alert("Could not reset. Please publish the new security rules in Firebase first.")})}});
 }
 function begin(){
  if(started)return;started=true;var s=null;try{s=localStorage.getItem("ep-who")}catch(e){}
@@ -183,10 +187,10 @@ var DOM="@english.app",auth=null,fsd=null,unsubs=[];
 function mapPath(p){return p.replace(/^prog\//,"progress/").replace(/^cm\//,"comments/")}
 function initDb(){db={doc:function(p){var r=fsd.doc(mapPath(p));return{get:function(){return r.get().then(function(sn){return{data:function(){return sn.data()}}})},set:function(d){return r.set(d)},del:function(){return r.delete()}}}}}
 function begin(){if(started)return;started=true;if(isT)showTeacher();else{showHome(who);checkNotes()}}
-function resetStudent(s){var ps=[db.doc("prog/"+s).del()];for(var n=1;n<=5;n++){ps.push(db.doc("cm/"+s+"_"+n).del());["","b"].forEach(function(sf){ps.push(db.doc("rec/"+s+"_"+n+sf).del());for(var i=0;i<4;i++)ps.push(db.doc("rec/"+s+"_"+n+sf+"p"+i).del())})}return Promise.all(ps)}
+function resetStudent(s){var ps=[db.doc("prog/"+s).del()];for(var n=1;n<=6;n++){ps.push(db.doc("cm/"+s+"_"+n).del());["","b"].forEach(function(sf){ps.push(db.doc("rec/"+s+"_"+n+sf).del());for(var i=0;i<4;i++)ps.push(db.doc("rec/"+s+"_"+n+sf+"p"+i).del())})}return Promise.all(ps)}
 function checkNotes(){
  if(isT||!who||document.getElementById("pop"))return;var items=[];
- for(var n=1;n<=5;n++){var k=who+"_"+n,c=cm[k],seen=0;try{seen=+localStorage.getItem("seen_"+k)||0}catch(e){}if(c&&c.text&&c.at>seen)items.push({k:k,n:n,c:c})}
+ for(var n=1;n<=6;n++){var k=who+"_"+n,c=cm[k],seen=0;try{seen=+localStorage.getItem("seen_"+k)||0}catch(e){}if(c&&c.text&&c.at>seen)items.push({k:k,n:n,c:c})}
  if(!items.length)return;var d=document.createElement("div");d.id="pop";d.className="pop";
  d.innerHTML='<div class="popbox"><h2>New comment from your teacher</h2>'+items.map(function(i){return '<div class="box"><b>Day '+i.n+': '+P[who].d[i.n-1][0]+'</b><br>'+esc(i.c.text)+'</div>'}).join("")+'<button class="btn pri" id="popok">OK</button></div>';
  document.body.appendChild(d);
@@ -198,7 +202,7 @@ function loginView(msg){
  document.getElementById("li").onclick=go;document.getElementById("pw").onkeydown=function(e){if(e.key==="Enter")go()};
 }
 function startData(u){
- var need=isT?2:6,got=0;
+ var need=isT?2:7,got=0;
  function once(fn){var d=false;return function(x){fn(x);if(!d){d=true;if(++got>=need)begin()}else{render();if(started)checkNotes()}}}
  var err=function(){if(!started)begin()};
  if(isT){
@@ -206,7 +210,7 @@ function startData(u){
   unsubs.push(fsd.collection("comments").onSnapshot(once(function(q){cm={};q.docs.forEach(function(d){cm[d.id]=d.data()})}),err));
  }else{
   unsubs.push(fsd.doc("progress/"+u).onSnapshot(once(function(sn){if(sn.exists)prog[u]=sn.data();else delete prog[u]}),err));
-  for(var n=1;n<=5;n++)(function(k){unsubs.push(fsd.doc("comments/"+k).onSnapshot(once(function(sn){if(sn.exists)cm[k]=sn.data();else delete cm[k]}),err))})(u+"_"+n);
+  for(var n=1;n<=6;n++)(function(k){unsubs.push(fsd.doc("comments/"+k).onSnapshot(once(function(sn){if(sn.exists)cm[k]=sn.data();else delete cm[k]}),err))})(u+"_"+n);
  }
  setTimeout(begin,6000);
 }
